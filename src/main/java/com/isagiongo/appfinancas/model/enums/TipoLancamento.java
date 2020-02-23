@@ -1,4 +1,4 @@
-package com.isagiongo.appfinancas.model.entity;
+package com.isagiongo.appfinancas.model.enums;
 
 public enum TipoLancamento {
 

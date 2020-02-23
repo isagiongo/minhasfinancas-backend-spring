@@ -1,4 +1,4 @@
-package com.isagiongo.appfinancas.model.entity;
+package com.isagiongo.appfinancas.model.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+
+import com.isagiongo.appfinancas.model.enums.StatusLancamento;
+import com.isagiongo.appfinancas.model.enums.TipoLancamento;
 
 import lombok.Builder;
 import lombok.Data;

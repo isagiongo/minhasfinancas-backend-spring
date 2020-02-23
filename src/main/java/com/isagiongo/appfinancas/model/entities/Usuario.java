@@ -1,4 +1,4 @@
-package com.isagiongo.appfinancas.model.entity;
+package com.isagiongo.appfinancas.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
