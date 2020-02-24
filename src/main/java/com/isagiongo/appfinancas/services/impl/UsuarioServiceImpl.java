@@ -1,9 +1,12 @@
 package com.isagiongo.appfinancas.services.impl;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.isagiongo.appfinancas.exceptions.AutenticacaoException;
 import com.isagiongo.appfinancas.exceptions.RegraNegocioException;
 import com.isagiongo.appfinancas.model.entities.Usuario;
 import com.isagiongo.appfinancas.repositories.UsuarioRepository;
@@ -20,8 +23,16 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public Usuario autenticar(String email, String senha) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+		
+		if (!usuario.isPresent()) {
+			throw new AutenticacaoException("Usuário não encontrado");
+		}
+		
+		if (!usuario.get().getSenha().equals(senha)) {
+			throw new AutenticacaoException("Senha inválida");
+		}
+		return usuario.get();
 	}
 
 	@Override
