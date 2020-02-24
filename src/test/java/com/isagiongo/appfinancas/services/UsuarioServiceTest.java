@@ -1,10 +1,11 @@
 package com.isagiongo.appfinancas.services;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
@@ -12,7 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -27,15 +31,11 @@ import com.isagiongo.appfinancas.services.impl.UsuarioServiceImpl;
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
-	private UsuarioService usuarioService;
+	@SpyBean
+	private UsuarioServiceImpl usuarioService;
 	
-	@Mock
+	@MockBean
 	private UsuarioRepository usuarioRepository;
-	
-	@BeforeEach
-	public void setUp() {
-		usuarioService = new UsuarioServiceImpl(usuarioRepository);
-	}
 	
 	@Test
 	public void deveValidarEmail() {
@@ -84,6 +84,32 @@ public class UsuarioServiceTest {
 				()-> usuarioService.autenticar(usuario.getEmail(), "55555"));
 		
 		assertTrue(exception.getMessage().contains("Senha inválida"));
+	}
+	
+	@Test
+	public void deveSalvarUsuario() {
+		doNothing().when(usuarioService).validarEmail("teste@gmail.com");
+		Usuario usuario = criaUsuario();
+		
+		when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+		
+		Usuario usuarioSalvo = usuarioService.salvarUsuario(new Usuario());
+		
+		assertEquals(1, usuarioSalvo.getId());
+		assertEquals("Isadora", usuarioSalvo.getNome());
+		assertEquals("isa@gmail.com", usuarioSalvo.getEmail());
+		assertEquals("1234", usuarioSalvo.getSenha());
+	}
+	
+	@Test
+	public void naoDeveSalvarUsuarioParaEmailInvalido() {
+		Usuario usuario = criaUsuario();
+		
+		doThrow(RegraNegocioException.class).when(usuarioService).validarEmail("isa@gmail.com");
+		
+		assertThrows(RegraNegocioException.class, () -> usuarioService.salvarUsuario(usuario));
+		
+		verify(usuarioRepository, never()).save(usuario);
 	}
 	
 	public static Usuario criaUsuario() {
