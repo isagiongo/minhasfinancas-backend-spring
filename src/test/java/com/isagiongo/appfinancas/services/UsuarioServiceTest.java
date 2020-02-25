@@ -5,15 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -113,12 +115,7 @@ public class UsuarioServiceTest {
 	}
 	
 	public static Usuario criaUsuario() {
-		Usuario usuario = new Usuario();
-		usuario.setId(1L);
-		usuario.setNome("Isadora");
-		usuario.setSenha("1234");
-		usuario.setEmail("isa@gmail.com");
-		return usuario;
+		return Usuario.builder().nome("Isadora").email("isa@gmail.com").id(1L).senha("1234").build();
 	}
 
 }
